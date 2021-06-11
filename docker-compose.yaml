@@ -1,0 +1,40 @@
+version: "3.9"
+
+services:
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        ports:
+            - "${APP_PORT}:${APP_PORT}"
+        restart: always
+        depends_on:
+            - postgres 
+            - redis
+        environment:
+            POSTGRES_USER: ${POSTGRES_USER}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+            POSTGRES_DB: ${POSTGRES_DATABASE}
+        networks:
+            - backend
+    postgres:
+        image: postgres
+        restart: always
+        environment:
+            POSTGRES_USER: ${POSTGRES_USER}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+            POSTGRES_DB: ${POSTGRES_DATABASE}
+        ports:
+            - "5433:${POSTGRES_PORT}"
+        networks:
+            - backend
+    redis:
+        image: redis
+        restart: always
+        ports:
+            - "6377:${REDIS_PORT}"
+        networks:
+            - backend
+        command: ["redis-server", "--requirepass", "${REDIS_PASSWORD}"]
+networks:
+    backend:
