@@ -37,13 +37,12 @@ func main() {
 		}
 	}()
 
-	fmt.Println("redis")
 	redisClient, err := database.NewRClient()
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer redisClient.Close()
-	fmt.Println("redis done")
+
 	e := echo.New()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
